@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KomuniTech - Suarakan Kebutuhan Komunitas Anda</title>
+
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Link ke file CSS hasil kompilasi Tailwind -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='dist/output.css') }}"
+    />
+
+    <style>
+      /* Menggunakan font Inter sebagai default */
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-50 text-gray-800">
+    <!-- Navbar -->
+    {% include 'includes/navbar.html' %}
+
+    <!-- Konten utama halaman akan disisipkan di sini -->
+    <main>{% block content %} {% endblock %}</main>
+
+    <!-- Footer -->
+    {% include 'includes/footer.html' %}
+  </body>
+</html>

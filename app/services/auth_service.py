@@ -1,68 +1,51 @@
-from flask import current_app
-from app.database.models import Pengguna
-from app.database.base import db
+from app.database.repositories.user_repository import UserRepository
 
 
-def register_user(username: str, email: str, nama: str, password: str) -> Pengguna:
-    """Register a new user.
-
-    Args:
-        username: Unique username
-        email: User email
-        nama: Full name
-        password: Plain text password
-
-    Returns:
-        Pengguna: The created user object
-
-    Raises:
-        ValueError: If username or email already exists
+class AuthService:
     """
-    if Pengguna.query.filter_by(username=username).first():
-        raise ValueError("Username already taken")
-    if Pengguna.query.filter_by(email=email).first():
-        raise ValueError("Email already registered")
-
-    user = Pengguna(username=username, email=email, nama=nama)
-    user.set_password(password)
-
-    db.session.add(user)
-    db.session.commit()
-
-    current_app.logger.info(f"New user registered: {username}")
-    return user
-
-
-def authenticate_user(username: str, password: str) -> Pengguna:
-    """Authenticate a user.
-
-    Args:
-        username: User's username
-        password: Plain text password
-
-    Returns:
-        Pengguna: User object if authenticated, None otherwise
+    Handles the business logic for authentication (login, register).
     """
-    user = Pengguna.query.filter_by(username=username).first()
-    if user and user.check_password(password):
-        current_app.logger.info(f"User authenticated: {username}")
-        return user
-    return None
 
+    @staticmethod
+    def register(name: str, username: str, email: str, password: str):
+        # 1. Check if username already exists
+        if UserRepository.get_by_username(username):
+            return {
+                "success": False,
+                "error": "Username sudah dipakai. Silahkan pilih username lain.",
+            }
 
-def get_user_by_id(user_id: int) -> Pengguna:
-    """Get user by ID.
+        # 2. Check if email already exists
+        if UserRepository.get_by_email(email):
+            return {
+                "success": False,
+                "error": "Email sudah terdaftar. Silahkan gunakan email lain.",
+            }
 
-    Args:
-        user_id: User ID
+        # 3. If all checks pass, create the user
+        try:
+            new_user = UserRepository.create(
+                name=name, username=username, email=email, password=password
+            )
+            return {"success": True, "user": new_user}
+        except Exception as e:
+            # Log the exception e for debugging
+            return {
+                "success": False,
+                "error": "Terjadi kesalahan.",
+            }
 
-    Returns:
-        Pengguna: User object
+    @staticmethod
+    def login(username: str, password: str):
+        # 1. Find the user by username
+        user = UserRepository.get_by_username(username)
 
-    Raises:
-        ValueError: If user not found
-    """
-    user = Pengguna.query.get(user_id)
-    if not user:
-        raise ValueError("User not found")
-    return user
+        # 2. Check if user exists and if the password is correct
+        if not user or not user.check_password(password):
+            return {
+                "success": False,
+                "error": "Username atau password salah. Silahkan coba lagi.",
+            }
+
+        # 3. If credentials are valid, return success
+        return {"success": True, "user": user}

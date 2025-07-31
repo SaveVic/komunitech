@@ -1,38 +1,140 @@
-{% extends "base.html" %}
+{% extends "layout.html" %} {% block content %}
+<div
+  class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8"
+>
+  <div class="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center">
+    <h2 class="mt-8 text-3xl font-bold text-gray-800">
+      Selamat Datang Kembali!
+    </h2>
+    <p class="text-gray-500 mt-2">Silakan masuk untuk melanjutkan.</p>
+  </div>
 
-{% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Masuk ke KomuniTech</h4>
-            </div>
-            <div class="card-body p-4">
-                <form action="" method="post" novalidate>
-                    {{ form.hidden_tag() }}
-                    <div class="mb-3">
-                        {{ form.username.label(class="form-label") }}
-                        {{ form.username(class="form-control") }}
-                        {% for error in form.username.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="mb-3">
-                        {{ form.password.label(class="form-label") }}
-                        {{ form.password(class="form-control") }}
-                        {% for error in form.password.errors %}
-                        <div class="text-danger">{{ error }}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="d-grid">
-                        {{ form.submit(class="btn btn-primary") }}
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer text-center">
-                <p class="mb-0">Belum memiliki akun? <a href="{{ url_for('auth.register') }}">Daftar sekarang</a></p>
-            </div>
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow-lg sm:rounded-lg sm:px-10">
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %} {% for category, message in messages %}
+      <div
+        class="mb-4 rounded-md bg-{{ 'green' if category == 'success' else 'red' }}-50 p-4"
+      >
+        <div class="flex">
+          <div class="ml-3">
+            <p
+              class="text-sm font-medium text-{{ 'green' if category == 'success' else 'red' }}-800"
+            >
+              {{ message }}
+            </p>
+          </div>
         </div>
+      </div>
+      {% endfor %} {% endif %} {% endwith %}
+
+      <form method="POST" action="" novalidate>
+        {{ form.hidden_tag() }}
+        <fieldset>
+          <div class="space-y-6">
+            <div>
+              {{ form.username.label(class="block text-sm font-medium
+              text-gray-700") }}
+              <div class="mt-1">
+                {{ form.username(class="appearance-none block w-full px-3 py-2
+                border border-gray-300 rounded-md shadow-sm placeholder-gray-400
+                focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
+                sm:text-sm") }}
+              </div>
+              {% for error in form.username.errors %}
+              <span class="text-red-500 text-xs">{{ error }}</span>
+              {% endfor %}
+            </div>
+
+            <div>
+              {{ form.password.label(class="block text-sm font-medium
+              text-gray-700") }}
+              <div class="mt-1 relative">
+                {{ form.password(class="appearance-none block w-full px-3 py-2
+                border border-gray-300 rounded-md shadow-sm placeholder-gray-400
+                focus:outline-none focus:ring-indigo-500 focus:border-indigo-500
+                sm:text-sm", id="password") }}
+                <button
+                  type="button"
+                  onclick="togglePassword('password', 'toggle-password-icon')"
+                  class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                  <svg
+                    id="toggle-password-icon"
+                    class="h-5 w-5 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                    />
+                  </svg>
+                </button>
+              </div>
+              {% for error in form.password.errors %}
+              <span class="text-red-500 text-xs">{{ error }}</span>
+              {% endfor %}
+            </div>
+
+            <div class="flex items-center justify-between">
+              <div class="flex items-center">
+                {{ form.remember_me(class="h-4 w-4 text-indigo-600
+                focus:ring-indigo-500 border-gray-300 rounded") }} {{
+                form.remember_me.label(class="ml-2 block text-sm text-gray-900")
+                }}
+              </div>
+            </div>
+
+            <div>
+              {{ form.submit(class="w-full flex justify-center py-2 px-4 border
+              border-transparent rounded-md shadow-sm text-sm font-medium
+              text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none
+              focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500") }}
+            </div>
+          </div>
+        </fieldset>
+      </form>
+      <p class="mt-8 text-center text-sm text-gray-600">
+        Belum punya akun?
+        <a
+          href="{{ url_for('auth.register') }}"
+          class="font-medium text-indigo-600 hover:text-indigo-500"
+        >
+          Daftar di sini
+        </a>
+      </p>
     </div>
+  </div>
 </div>
+
+<script>
+  function togglePassword(fieldId, iconId) {
+    const passwordField = document.getElementById(fieldId)
+    const icon = document.getElementById(iconId)
+    if (passwordField.type === 'password') {
+      passwordField.type = 'text'
+      icon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7 1.274-4.057 5.064-7 9.542-7 1.856 0 3.642.59 5.122 1.642M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2 2l20 20" />
+            `
+    } else {
+      passwordField.type = 'password'
+      icon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            `
+    }
+  }
+</script>
 {% endblock %}
